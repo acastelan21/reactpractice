@@ -4,32 +4,37 @@ import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
-  getGetRequest(){
-    axios.get("api/test").then(res => {
-      console.log("get test")
-    });
+  state = {
+    title: "",
+    body: ""
   }
-  getPostRequest(){
-    axios.post("api/test").then(res => {
-      console.log("post test")
-    });
-}
+  handleInputChange = event => {
 
+      const {name, value} = event.target;
+      console.log(name);
+      this.setState({ [name]: value});
+  }
+  saveBlog = event =>{
+    event.preventDefault();
+    console.log(this.state.title);
+    console.log(this.state.body);
+  }
+  postBlog = event => {
+    event.preventDefault();
+    const { title, body} = this.state;
+    axios.post("/api/blog", {title, body}).then(res => {
+      console.log(res);
+      this.setState({ title: "", body: ""});
+    })
+  }
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <div>
-          Hello World
-        <button onClick={this.getGetRequest}>Get</button>
-        <button onClick={this.getPostRequest}>Post</button>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <form>
+          <input name="title" onChange={this.handleInputChange}  value={this.state.title} />
+          <textarea name="body" onChange={this.handleInputChange} value={this.state.body} />
+          <button onClick={this.postBlog}>Submit</button>
+        </form>
       </div>
     );
   }
